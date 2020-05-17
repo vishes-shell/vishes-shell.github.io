@@ -99,22 +99,6 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: maupassant
 
-theme_config:
-  menu:
-    - page: home
-      directory: .
-      icon: fa-home
-    - page: archive
-      directory: archives/
-      icon: fa-archive
-
-  widgets:
-    - search
-    - tag
-    - recent_posts
-
-  google_analytics: UA-166126257-1
-
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
