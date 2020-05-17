@@ -26,4 +26,4 @@ after_success:
   - git init
   - git add --all .
   - git commit -m "Travis CI Auto Builder"
-  - git push --quiet --force https://${GH_TOKEN}@github.com/vishes-shell/vishes-shell.github.io.git master
+  - git push --force https://${GH_TOKEN}@github.com/vishes-shell/vishes-shell.github.io.git master
