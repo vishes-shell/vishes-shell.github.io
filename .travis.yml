@@ -1,18 +1,26 @@
 sudo: false
 language: node_js
 node_js:
-  - 10 # use nodejs v10 LTS
+  - 10
+
 cache: npm
 branches:
   only:
     - dev
+
+before_install:
+  - npm install -g hexo-cli
+
+install:
+  - npm install
+
+before_script:
+  - git config --global user.name "Alex Shalynin"
+  - git config --global user.email "6602362+vishes-shell@users.noreply.github.com"
+
 script:
-  - hexo generate # generate static files
-deploy:
-  provider: pages
-  skip-cleanup: true
-  github-token: $GH_TOKEN
-  keep-history: true
-  on:
-    branch: master
-  local-dir: public
+  - hexo generate
+
+after_success:
+  - sed -i'' - sed -i'' "s~git@github.com:vishes-shell/vishes-shell.github.io.git~https://${GH_TOKEN}@github.com/vishes-shell/vishes-shell.github.io.git~" _config.yml
+  - hexo d
