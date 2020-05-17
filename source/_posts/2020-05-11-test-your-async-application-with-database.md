@@ -11,22 +11,22 @@ toc: true
 ---
 
 With rise of python *async* support with [`asyncio`](https://docs.python.org/3/library/asyncio.html)
-library new async frameworks/libraries/clients started to pop out and grow it's
-popularities. More and more people want to try async features and enter this
+library new async frameworks/libraries/clients started to pop out and grow their
+popularities. More and more people want to try _async_ features and enter this
 magical world where everything does something useful while waiting for _IO guys_.
 
 And you are one of those who want to do more than making
-[`asyncio.sleep(n)`](https://docs.python.org/3/library/asyncio-task.html#asyncio.sleep) 
-and be proud of how cool it is to be on the edge of technology. Putting your 
-program to sleep is easy, but you are not stopping here, you want HTTP requests,
+[`asyncio.sleep(n)`](https://docs.python.org/3/library/asyncio-task.html#asyncio.sleep)
+and be proud of how cool it is to be on the edge of technology. Putting your
+program to sleep is easy, but you are not stopping there, you want HTTP requests,
 databases and other real world scenarios to solve, also you want to test this.
-That's what this article is for, to find a way to test your async application
-that has some connections to database.
+That's what this article is for, to _find a way to test your async application
+that has some connections to database_.
 
 
 ## Purpose
 
-List of testing rules (one of many): [Testing Your Code](https://docs.python-guide.org/writing/tests/)
+Here is a list of testing rules (one of many): [Testing Your Code](https://docs.python-guide.org/writing/tests/)
 
 And the part that we want to cover:
 
@@ -35,8 +35,8 @@ and also within the test suite, regardless of the order that they are called.
 The implication of this rule is that each test must be loaded with a fresh
 dataset and may have to do some cleanup afterwards.
 
-Want to work with database in tests, but want it to be isolated and clean
-everything after each test ran.
+Overall: we want to work with database in tests, but want it to be isolated and
+clean everything after each test ran.
 
 
 ## Ways to keep db fresh
@@ -49,7 +49,7 @@ everything after each test ran.
 
  1. Drop database after every test (this sure keep database clean)
 
-    *Thoughts*: Not good
+    *Thoughts*: Not good (heavy)
 
  1. Delete data in all tables
 
@@ -66,23 +66,22 @@ everything after each test ran.
     *Thoughts*: Same as droping database, not good
 
 
-So the best way is to put tests in transactions and roll them after test
-finishes.
+The best way is to put tests in transactions and roll them after test finishes.
 
 
 ## Tools
 
-For *testing* purposes we want to use awesome
-[`pytest`](https://docs.pytest.org/en/latest/). I won't dive in to how `pytest` is
-awesome, there is already documentation, lots of articles, conference talks and
-stackoverflow questions. But if you still loyal to `unittest` i'm not quite sure
-that this article would be for you.
+For *testing* purposes we would use awesome
+[`pytest`](https://docs.pytest.org/en/latest/). I won't dive in to how good
+`pytest` is, there is already documentation, lots of articles, conference talks
+and stackoverflow questions. But if you are still loyal to `unittest` i'm not
+quite sure that this article would be for you.
 
 Async *database client* would be
 [`databases`](https://github.com/encode/databases), because it's ready to use
 and [Tom Christie](http://www.tomchristie.com/)
 ([creator](https://github.com/encode/databases/commit/388f163096c9f4e274b57523b18b6c59ff33b306))
-knows a way to build a beautiful software.
+knows the way to build a beautiful software.
 
 For `databases` we would use `sqlite` since it's so easy to use, you can just
 copy and paste lines (_isn't that the one that we love the most?_).
@@ -90,7 +89,7 @@ copy and paste lines (_isn't that the one that we love the most?_).
 
 ## Project
 
-We need to define our models and for testing purpose Note is great:
+For testing purpose Note model will be used:
 
 ```python
 #  app/models.py
@@ -138,13 +137,13 @@ def sqlite_db() -> Database:
 Note: _For running async tests (they should be async since you are dealing with
 async code) you would require
 [`pytest-asyncio`](https://github.com/pytest-dev/pytest-asyncio) and decorate
-your test with `@pytest.mark.asyncio` or apply this mark to all tests with_
+your test with `@pytest.mark.asyncio` or apply asyncio mark to all tests with:_
 
 ```python
 pytestmark = pytest.mark.asyncio
 ```
 
-Or you can create your own decorator as in `databases` tests:
+Another way to test async is to create your own decorator as in `databases`:
 [`async_adapter`](https://github.com/encode/databases/blob/master/tests/test_databases.py#L100-L111):
 
 ```python
@@ -165,7 +164,7 @@ def async_adapter(wrapped_func):
 
 ### Test function
 
-We would define some generic function that insert data and check if it's there.
+Define generic function that inserts data and check if it's there.
 We use `pytest.fail` since we want to use this function to be used by every
 test.
 
@@ -202,7 +201,7 @@ async def check_empty_database(sqlite_db):
 
 ### Rollback transaction fixture
 
-Most obvious way is to implement transactional fixture with force rollback
+The most obvious way is to implement transactional fixture with force rollback
 transaction context manager as this:
 
 ```python
@@ -248,9 +247,9 @@ tests/test_databases_sqlite.py:16: Failed
 ERROR tests/test_databases_sqlite.py::test_rollback_transaction_fixture_and_asyncio_mark - Failed: db data should be rolled back
 ```
 
-We see that the test is passed, but due to `pytest` fixtures implementation we
-cannot make them to fail test, only create error. But in this case it's enough
-to say that data is not cleaned.
+We can see that the test is passed, but due to `pytest` fixtures implementation
+we cannot make them to fail test, only create an error. But in this case it's
+enough to say that _data is not cleaned_.
 
 But why is that? Maybe `force_rollback` transaction don't even work? We can try
 and make sure that it's not our fault:
@@ -275,17 +274,16 @@ collected 5 items / 4 deselected / 1 selected
 tests/test_databases_sqlite.py .                                [100%]
 ```
 
-And we see that force rollback transaction works as expected, but why
-transaction is not rolled back in fixture? That's because async fixtures are
-executed in it's own context, and maybe transaction is rolled back but not the
-one that we wanted to.
+Force rollback transaction works as expected, but why transaction is not rolled
+back in fixture? That's because async fixtures are executed in it's own context,
+and maybe transaction is rolled back, however not the one that we wanted to.
 
 
-### Any other way?
+### Any other ways?
 
-Writing in each test context manager in not
+Writing context manager in each test in not
 [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) at all, however it
-will get us where we want, but there is another way: decorator.
+will get us where we want, but there is another way: *decorator*.
 
 ```python
 import functools
@@ -325,12 +323,12 @@ tests/test_databases_sqlite.py .                                [100%]
 
 ## Conclusion
 
-We couldn't achieve desired test setup through _pytest fixture_, maybe
-`autouse=True` one, but we achieved tests with rolled back transactions trough
-decorator, which in not that bad.
+We couldn't achieve desired test setup through _pytest fixture_, maybe even
+`autouse=True` one, but **we achieved tests with rolled back transactions trough
+decorator**, which in not that bad.
 
-I hope someday we can all use `fixtures` and by now _decoration_ is one of the
-cleanest methods at the moment.
+I hope someday we can all use `fixtures` and by now, _decoration_ is the one of
+the cleanest methods at the moment.
 
 
 Source code can be found here:
