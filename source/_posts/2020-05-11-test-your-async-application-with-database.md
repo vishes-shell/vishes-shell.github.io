@@ -275,13 +275,14 @@ tests/test_databases_sqlite.py .                                [100%]
 ```
 
 Force rollback transaction works as expected, but why transaction is not rolled
-back in fixture? That's because async fixtures are executed in it's own context,
-and maybe transaction is rolled back, however not the one that we wanted to.
+back in fixture? The reason is that async fixtures are executed in it's own
+context, so maybe transaction is rolled back, however not the one that we
+wanted to.
 
 
 ### Any other ways?
 
-Writing context manager in each test in not
+Writing context manager in each test is not
 [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) at all, however it
 will get us where we want, but there is another way: *decorator*.
 
@@ -323,12 +324,12 @@ tests/test_databases_sqlite.py .                                [100%]
 
 ## Conclusion
 
-We couldn't achieve desired test setup through _pytest fixture_, maybe even
-`autouse=True` one, but **we achieved tests with rolled back transactions trough
-decorator**, which in not that bad.
+We couldn't make database test setup through _pytest fixture_ (maybe even
+with `autouse=True`), however **we've achieved tests with rolled back
+transactions trough decorator**, which is quite good enough.
 
-I hope someday we can all use `fixtures` and by now, _decoration_ is the one of
-the cleanest methods at the moment.
+I hope someday we can all use async fixtures and by now _decoration_ is the one
+of the cleanest methods at the moment.
 
 
 Source code can be found here:
