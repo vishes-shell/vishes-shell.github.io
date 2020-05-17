@@ -8,6 +8,7 @@ tags:
 - databases
 - python
 toc: true
+date: 2020-05-11
 ---
 
 With rise of python *async* support with [`asyncio`](https://docs.python.org/3/library/asyncio.html)
